@@ -1,5 +1,5 @@
 //Small grid version
-//Name all containers for ore and ice (o2/h2 generators too) as a group "Containers" and cockpit as a "Cockpit".
+//Name all containers for ore and ice (o2/h2 generators too) as a group "Containers".
 //Counts ice and time to consunme it. Shows results on a screens
 
 //Are you need Info about battery
@@ -31,6 +31,9 @@ public void Main(string arg, UpdateType updateSource)
     List<IMyTerminalBlock> batterys = new List<IMyTerminalBlock>();
     GridTerminalSystem.GetBlocksOfType<IMyBatteryBlock>(batterys);
 
+    List<IMyCockpit> Cockpits = new List<IMyCockpit>();
+    GridTerminalSystem.GetBlocksOfType<IMyCockpit>(Cockpits);
+
     double amount = 0;
     MyFixedPoint size = 0;
     MyFixedPoint maxSize = 0;
@@ -57,6 +60,8 @@ public void Main(string arg, UpdateType updateSource)
     double PowerOut = 0;
     double PowerStored = 0;
     double MaxPowerCap = 0;
+    double AllGridsStored = 0;
+    double AllGridsCap = 0;
     if (PowerCheckMode)
     {
         foreach (IMyBatteryBlock battery in batterys)
@@ -68,9 +73,12 @@ public void Main(string arg, UpdateType updateSource)
                 PowerStored += battery.CurrentStoredPower;
                 MaxPowerCap += battery.MaxStoredPower;
             }
+                AllGridsStored += battery.CurrentStoredPower;
+                AllGridsCap += battery.MaxStoredPower;
         }  
     }
-    IMyCockpit cockpit = GridTerminalSystem.GetBlockWithName("Cockpit") as IMyCockpit; //Get Cockpit
+    //Yo if you have more than 1 cockpit charnge this line
+    IMyCockpit cockpit = Cockpits[0];
 
     IMyTextSurface surf = cockpit.GetSurface(1);  
     IMyTextSurface surf2 = cockpit.GetSurface(2);   
@@ -105,16 +113,21 @@ public void Main(string arg, UpdateType updateSource)
         surf3.ContentType = ContentType.TEXT_AND_IMAGE;
         surf3.FontColor = White;
         surf3.FontSize= 4;
-        if(PowerStored/MaxPowerCap > 0.9999)
+        double hours = PowerStored/(PowerOut-PowerIn);
+        if(PowerStored/MaxPowerCap > 0.999)
         {
             surf3.FontColor = Green;
-            surf3.WriteText("Charged"); 
+            if (AllGridsStored/AllGridsCap > 0.999)
+                surf3.WriteText("All grids\ncharged");
+            else 
+                surf3.WriteText("This grid\ncharged");
         }
         else if (PowerIn > PowerOut)
            surf3.WriteText("Charging\n" + (100*PowerStored/MaxPowerCap).ToString("0") + "%"); 
         else
         {   
-            double hours = PowerStored/PowerOut;
+            
+            Echo(PowerIn.ToString());
             if (hours < 5/60)
                 surf3.FontColor = WarningColor;
             if (hours < 2/60)
