@@ -87,9 +87,10 @@ public void Main(string arg, UpdateType updateSource)
 
     if (amount > 0.01) 
     {
+        surf.FontColor = White;
+        //If time for consume ice is lower than 180 seconds - warning
         if (amount/(generators.Count*5) < 180)
             surf.FontColor = WarningColor;
-        surf.FontColor = White;
         surf.FontSize= 4;
         surf.WriteText("Ice: " + amount.ToString() + "\n" + "Time:\n" + amount/(generators.Count*5)+ " s"); 
     }
