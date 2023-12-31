@@ -1,6 +1,6 @@
+//Get knowledge about remaining of ice and energy (in addition over default hud - % of charge) in your ship. Also precentage of fullnesness of containers
 //Small grid version
 //Name all containers for ore and ice (o2/h2 generators too) as a group "Containers".
-//Counts ice and time to consunme it. Shows results on a screens
 
 //Are you need Info about battery
 bool PowerCheckMode = true;
