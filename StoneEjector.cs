@@ -25,6 +25,9 @@ public void Main(string arg, UpdateType updateSource)
 
     List<MyInventoryItemFilter> FilterListStone = new List<MyInventoryItemFilter>{StoneFilterItem};
 
+    if(((double) StoneSorter.GetInventory().GetItemAmount(StoneItem)) > 0) 
+                stones = true;
+
     foreach (IMyTerminalBlock p in containers)
         if(Me.CubeGrid.ToString() == p.CubeGrid.ToString())
             if(((double) p.GetInventory().GetItemAmount(StoneItem)) > 0) {
@@ -55,10 +58,12 @@ public void Main(string arg, UpdateType updateSource)
     )
     {
         StoneSorter.SetFilter(MyConveyorSorterMode.Whitelist, FilterListStone); 
+        StoneSorter.DrainAll = true;
         StoneEjector.CollectAll = true;
         StoneEjector.ThrowOut = true;
     }
     else {
+        StoneSorter.DrainAll = false;
         StoneEjector.CollectAll = false;
         StoneEjector.ThrowOut = false;
         StoneSorter.SetFilter(MyConveyorSorterMode.Blacklist, FilterListStone);
